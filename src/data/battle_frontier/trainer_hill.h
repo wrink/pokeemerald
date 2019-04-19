@@ -1,4 +1,4 @@
-#define TRAINER_HILL_OTID 0x10000000
+#define TRAINER_HILL_OTID 0xFFFF
 
 static const struct TrHillTag sDataTagNormal =
 {

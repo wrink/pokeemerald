@@ -233,7 +233,9 @@ struct BattleTowerPokemon
     u8 speedEV;
     u8 spAttackEV;
     u8 spDefenseEV;
-    u32 otId;
+    u16 otId;
+    u8 learnedAbility;
+    u8 learnedType;
     u32 hpIV:5;
     u32 attackIV:5;
     u32 defenseIV:5;

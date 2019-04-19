@@ -93,6 +93,8 @@
 #define MON_DATA_SPEED2            86
 #define MON_DATA_SPATK2            87
 #define MON_DATA_SPDEF2            88
+#define MON_DATA_LEARNED_ABILITY   89
+#define MON_DATA_LEARNED_TYPE      90
 
 #define MAX_LEVEL 100
 
@@ -217,7 +219,9 @@ union PokemonSubstruct
 struct BoxPokemon
 {
     u32 personality;
-    u32 otId;
+    u16 otId;
+    u8 learnedAbility;
+    u8 learnedType;
     u8 nickname[POKEMON_NAME_LENGTH];
     u8 language;
     u8 isBadEgg:1;
@@ -300,7 +304,9 @@ struct BattlePokemon
     /*0x48*/ u32 personality;
     /*0x4C*/ u32 status1;
     /*0x50*/ u32 status2;
-    /*0x54*/ u32 otId;
+    /*0x54*/ u16 otId;
+    /*0x56*/ u8 learnedAbility;
+    /*0x57*/ u8 learnedType;
 };
 
 struct BaseStats
@@ -503,7 +509,7 @@ u8 CalculatePlayerPartyCount(void);
 u8 CalculateEnemyPartyCount(void);
 u8 GetMonsStateToDoubles(void);
 u8 GetMonsStateToDoubles_2(void);
-u8 GetAbilityBySpecies(u16 species, bool8 altAbility);
+u8 GetAbilityBySpecies(u16 species, bool8 altAbility, u8 learnedAbility);
 u8 GetMonAbility(struct Pokemon *mon);
 void CreateSecretBaseEnemyParty(struct SecretBase *secretBaseRecord);
 u8 GetSecretBaseTrainerPicIndex(void);

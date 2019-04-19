@@ -2286,7 +2286,7 @@ void CreateMaleMon(struct Pokemon *mon, u16 species, u8 level)
 
     do
     {
-        otId = Random32();
+        otId = Random();
         personality = Random32();
     }
     while (GetGenderFromSpeciesAndPersonality(species, personality) != MON_MALE);
@@ -2380,6 +2380,9 @@ void CreateBattleTowerMon(struct Pokemon *mon, struct BattleTowerPokemon *src)
     SetMonData(mon, MON_DATA_SPEED_EV, &src->speedEV);
     SetMonData(mon, MON_DATA_SPATK_EV, &src->spAttackEV);
     SetMonData(mon, MON_DATA_SPDEF_EV, &src->spDefenseEV);
+    value = 0;
+    SetMonData(mon, MON_DATA_LEARNED_ABILITY, &value);
+    SetMonData(mon, MON_DATA_LEARNED_TYPE, &value);
     value = src->altAbility;
     SetMonData(mon, MON_DATA_ALT_ABILITY, &value);
     value = src->hpIV;
@@ -2442,6 +2445,9 @@ void CreateBattleTowerMon2(struct Pokemon *mon, struct BattleTowerPokemon *src, 
     SetMonData(mon, MON_DATA_SPEED_EV, &src->speedEV);
     SetMonData(mon, MON_DATA_SPATK_EV, &src->spAttackEV);
     SetMonData(mon, MON_DATA_SPDEF_EV, &src->spDefenseEV);
+    value = 0;
+    SetMonData(mon, MON_DATA_LEARNED_ABILITY, &value);
+    SetMonData(mon, MON_DATA_LEARNED_TYPE, &value);
     value = src->altAbility;
     SetMonData(mon, MON_DATA_ALT_ABILITY, &value);
     value = src->hpIV;
@@ -2559,6 +2565,8 @@ void sub_80686FC(struct Pokemon *mon, struct BattleTowerPokemon *dest)
     dest->spAttackIV  = GetMonData(mon, MON_DATA_SPATK_IV, NULL);
     dest->spDefenseIV  = GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
     dest->altAbility = GetMonData(mon, MON_DATA_ALT_ABILITY, NULL);
+    dest->learnedAbility = GetMonData(mon, MON_DATA_LEARNED_ABILITY, NULL);
+    dest->learnedType = GetMonData(mon, MON_DATA_LEARNED_TYPE, NULL);
     dest->personality = GetMonData(mon, MON_DATA_PERSONALITY, NULL);
     GetMonData(mon, MON_DATA_NICKNAME, dest->nickname);
 }
@@ -3558,6 +3566,12 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_ALT_ABILITY:
         retVal = substruct3->altAbility;
         break;
+    case MON_DATA_LEARNED_ABILITY:
+        retVal = boxMon->learnedAbility;
+        break;
+    case MON_DATA_LEARNED_TYPE:
+        retVal = boxMon->learnedType;
+        break;
     case MON_DATA_COOL_RIBBON:
         retVal = substruct3->coolRibbon;
         break;
@@ -3779,7 +3793,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         SET32(boxMon->personality);
         break;
     case MON_DATA_OT_ID:
-        SET32(boxMon->otId);
+        SET16(boxMon->otId);
         break;
     case MON_DATA_NICKNAME:
     {
@@ -3936,6 +3950,12 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     case MON_DATA_ALT_ABILITY:
         SET8(substruct3->altAbility);
+        break;
+    case MON_DATA_LEARNED_ABILITY:
+        SET8(boxMon->learnedAbility);
+        break;
+    case MON_DATA_LEARNED_TYPE:
+        SET8(boxMon->learnedType);
         break;
     case MON_DATA_COOL_RIBBON:
         SET8(substruct3->coolRibbon);
@@ -4142,9 +4162,11 @@ u8 GetMonsStateToDoubles_2(void)
     return (aliveCount > 1) ? PLAYER_HAS_TWO_USABLE_MONS : PLAYER_HAS_ONE_USABLE_MON;
 }
 
-u8 GetAbilityBySpecies(u16 species, bool8 altAbility)
+u8 GetAbilityBySpecies(u16 species, bool8 altAbility, u8 learnedAbility)
 {
-    if (altAbility)
+    if (learnedAbility)
+      gLastUsedAbility = learnedAbility;
+    else if (altAbility)
         gLastUsedAbility = gBaseStats[species].ability2;
     else
         gLastUsedAbility = gBaseStats[species].ability1;
@@ -4156,7 +4178,8 @@ u8 GetMonAbility(struct Pokemon *mon)
 {
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 altAbility = GetMonData(mon, MON_DATA_ALT_ABILITY, NULL);
-    return GetAbilityBySpecies(species, altAbility);
+    u8 learnedAbility = GetMonData(mon, MON_DATA_LEARNED_ABILITY, NULL);
+    return GetAbilityBySpecies(species, altAbility, learnedAbility);
 }
 
 void CreateSecretBaseEnemyParty(struct SecretBase *secretBaseRecord)
@@ -4298,11 +4321,13 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
     dst->spDefense = GetMonData(src, MON_DATA_SPDEF, NULL);
     dst->isEgg = GetMonData(src, MON_DATA_IS_EGG, NULL);
     dst->altAbility = GetMonData(src, MON_DATA_ALT_ABILITY, NULL);
+    dst->learnedAbility = GetMonData(src, MON_DATA_LEARNED_ABILITY, NULL);
+    dst->learnedType = GetMonData(src, MON_DATA_LEARNED_TYPE, NULL);
     dst->otId = GetMonData(src, MON_DATA_OT_ID, NULL);
     dst->type1 = gBaseStats[dst->species].type1;
     dst->type2 = gBaseStats[dst->species].type2;
     dst->type3 = TYPE_MYSTERY;
-    dst->ability = GetAbilityBySpecies(dst->species, dst->altAbility);
+    dst->ability = GetAbilityBySpecies(dst->species, dst->altAbility, dst->learnedAbility);
     GetMonData(src, MON_DATA_NICKNAME, nickname);
     StringCopy10(dst->nickname, nickname);
     GetMonData(src, MON_DATA_OT_NAME, dst->otName);

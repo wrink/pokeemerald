@@ -487,6 +487,8 @@ static u32 CopyWallyMonData(u8 monId, u8 *dst)
         battleMon.spDefense = GetMonData(&gPlayerParty[monId], MON_DATA_SPDEF);
         battleMon.isEgg = GetMonData(&gPlayerParty[monId], MON_DATA_IS_EGG);
         battleMon.altAbility = GetMonData(&gPlayerParty[monId], MON_DATA_ALT_ABILITY);
+        battleMon.learnedAbility = GetMonData(&gPlayerParty[monId], MON_DATA_LEARNED_ABILITY);
+        battleMon.learnedType = GetMonData(&gPlayerParty[monId], MON_DATA_LEARNED_TYPE);
         battleMon.otId = GetMonData(&gPlayerParty[monId], MON_DATA_OT_ID);
         GetMonData(&gPlayerParty[monId], MON_DATA_NICKNAME, nickname);
         StringCopy10(battleMon.nickname, nickname);

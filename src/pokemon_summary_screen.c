@@ -138,7 +138,9 @@ static EWRAM_DATA struct PokemonSummaryScreenData
         u8 sanity; // 0x35
         u8 OTName[8]; // 0x36
         u8 unk3E[9]; // 0x3E
-        u32 OTID; // 0x48
+        u16 OTID; // 0x48
+        u8 learnedAbility; // 0x4A
+        u8 learnedType; // 0x4B
     } summary;
     u16 bgTilemapBuffers[4][2][0x400];
     u8 mode;
@@ -1461,6 +1463,8 @@ static bool8 ExtractMonDataToSummaryStruct(struct Pokemon *mon)
         sum->exp = GetMonData(mon, MON_DATA_EXP);
         sum->level = GetMonData(mon, MON_DATA_LEVEL);
         sum->altAbility = GetMonData(mon, MON_DATA_ALT_ABILITY);
+        sum->learnedAbility = GetMonData(mon, MON_DATA_LEARNED_ABILITY);
+        sum->learnedType = GetMonData(mon, MON_DATA_LEARNED_TYPE);
         sum->item = GetMonData(mon, MON_DATA_HELD_ITEM);
         sum->pid = GetMonData(mon, MON_DATA_PERSONALITY);
         sum->sanity = GetMonData(mon, MON_DATA_SANITY_IS_BAD_EGG);
@@ -3172,13 +3176,13 @@ static void PrintMonOTID(void)
 
 static void PrintMonAbilityName(void)
 {
-    u8 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.altAbility);
+    u8 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.altAbility, sMonSummaryScreen->summary.learnedAbility);
     SummaryScreen_PrintTextOnWindow(AddWindowFromTemplateList(sPageInfoTemplate, PSS_DATA_WINDOW_INFO_ABILITY), gAbilityNames[ability], 0, 1, 0, 1);
 }
 
 static void PrintMonAbilityDescription(void)
 {
-    u8 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.altAbility);
+    u8 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.altAbility, sMonSummaryScreen->summary.learnedAbility);
     SummaryScreen_PrintTextOnWindow(AddWindowFromTemplateList(sPageInfoTemplate, PSS_DATA_WINDOW_INFO_ABILITY), gAbilityDescriptionPointers[ability], 0, 17, 0, 0);
 }
 

@@ -2715,7 +2715,7 @@ static void CreateDomeOpponentMons(u16 tournamentTrainerId)
 
     ZeroEnemyPartyMons();
     bits = GetDomeTrainerMonCountInBits(tournamentTrainerId);
-    otId = Random32();
+    otId = Random();
     if (Random() % 10 > 5)
     {
         for (i = 0; i < 3; i++)

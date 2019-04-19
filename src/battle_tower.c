@@ -1933,7 +1933,7 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
     for (bfMonCount = 0; monSets[bfMonCount] != 0xFFFF; bfMonCount++)
         ;
     i = 0;
-    otID = Random32();
+    otID = Random();
     while (i != monCount)
     {
         u16 monSetId = monSets[Random() % bfMonCount];
@@ -3247,7 +3247,7 @@ static void FillPartnerParty(u16 trainerId)
     }
     else if (trainerId >= TRAINER_CUSTOM_PARTNER)
     {
-        otID = Random32();
+        otID = Random();
 
         for (i = 0; i < 3; i++)
             ZeroMonData(&gPlayerParty[i + 3]);
@@ -3320,7 +3320,7 @@ static void FillPartnerParty(u16 trainerId)
     {
         level = SetFacilityPtrsGetLevel();
         ivs = GetFrontierTrainerFixedIvs(trainerId);
-        otID = Random32();
+        otID = Random();
         for (i = 0; i < 2; i++)
         {
             monSetId = gSaveBlock2Ptr->frontier.trainerIds[i + 18];
@@ -3710,7 +3710,7 @@ static void FillTentTrainerParty_(u16 trainerId, u8 firstMonId, u8 monCount)
     }
 
     i = 0;
-    otID = Random32();
+    otID = Random();
     while (i != monCount)
     {
         u16 monSetId = monSets[Random() % bfMonCount];
